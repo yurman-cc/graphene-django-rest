@@ -14,7 +14,7 @@
 # to drop that and replace as needed.
 #
 # This code was tested on the live server installation in the following environment:
-# Django 1.11
+# Django 2.1.4
 # graphene 2.1.3
 # graphene-django 2.2.0
 
@@ -30,6 +30,8 @@ import sys
 import traceback
 from json import loads, dumps
 import re
+#
+from django.utils.log import log_response
 
 from django.contrib import admin
 from django.http.response import HttpResponse, HttpResponseNotAllowed
@@ -61,7 +63,9 @@ class HttpError(Exception):
 class QhostGraphQLView(GraphQLView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # +++
         self.dataSrv = server.Server('pyz/tickdata')
+        # ---
 
     @method_decorator(ensure_csrf_cookie)
     def dispatch(self, request, *args, **kwargs):
@@ -162,7 +166,12 @@ class QhostGraphQLView(GraphQLView):
                 res = HttpResponse(status=200, content=response.data, content_type='application/json')
 
         except:
-            traceback.print_exception(*sys.exc_info())
+            log_response(
+                'GraphQL-REST dispatch processRawRequest: %s', request.path,
+                response=res,
+                request=request,
+                exc_info=sys.exc_info(),
+            )
             pass
 
         # Pass on the trailing request part to the original GraphQL request
@@ -231,7 +240,11 @@ class QhostGraphQLView(GraphQLView):
                 res = res.encode('utf-8')
 
             except Exception as e:
-                traceback.print_exception(*sys.exc_info())
+                log_response(
+                    'GraphQL-REST dispatch execute_graphql_request: ',
+                    response=HttpResponse(status=402),
+                    exc_info=sys.exc_info(),
+                )
                 return ExecutionResult(errors=[e], invalid=True)
 
         # Be silent in pure pass-through (invalid json etc.) letting graphene handle it
