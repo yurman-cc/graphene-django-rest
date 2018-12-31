@@ -1,8 +1,8 @@
-# graphene-rest
+# graphene-django-rest
 Extend your Django graphene data point (GraphQL) with arbitrary queries (for legacy APIs etc.)
 
 Author:    http://yurman.cc
-Published: https://github.com/yurman-cc/graphene-rest
+Published: https://github.com/yurman-cc/graphene-django-rest
 Copyright: MIT (the same as https://github.com/graphql-python/graphene-django)
 Date:      2018-11-22
 
