@@ -17,6 +17,6 @@ The code specific to my server implementation is left for clarity and marked wit
  to drop that and replace as needed.
 
 This code was tested on the live server installation in the following environment:
-Django 1.11
+Django 1.11, 2.1.4
 graphene 2.1.3
 graphene-django 2.2.0
